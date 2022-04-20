@@ -219,3 +219,59 @@
 - You can use MongoDB Compass for management it
 
   - Compass is an interactive tool for querying, optimizing, and analyzing your MongoDB data.
+
+## Register User to MongoDB
+
+- ```bash
+  cd server
+  npm install mongoose
+  ```
+
+- Create `server/models/user.model.js`
+
+  - ```js
+    const mongoose = require('mongoose');
+    const User = new mongoose.Schema(
+      {
+        name: { type: String, required: true },
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        quote: { type: String },
+      },
+      // `user-data` is collection name
+      { collection: 'user-data' }
+    );
+
+    const model = mongoose.model('UserData', User);
+
+    module.exports = model;
+    ```
+
+- On `/server/index.js`
+
+  - ```js
+    ...
+    const mongoose = require('mongoose');
+    const User = require('./models/user.model');
+
+    ...
+    // `mern-user-auth` is database name
+    mongoose.connect('mongodb://localhost:27017/mern-user-auth');
+
+    app.post('/api/register', async (req, res) => {
+      try {
+        await User.create({
+          name: req.body.name,
+          email: req.body.email,
+          password: req.body.password,
+        });
+        res.json({ status: 'ok' });
+      } catch (error) {
+        res.json({ status: 'error', error: 'Duplicate email' });
+      }
+    });
+
+    app.listen(1337, () => {
+      console.log('Server started on 1337 port');
+    });
+    ```
