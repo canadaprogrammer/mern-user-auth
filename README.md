@@ -161,13 +161,13 @@
 
     app.post('/api/register', (req, res) => {
       console.log(req.body);
-      res.json({ status: 'ok' });
+      res.json({ status: 'ok' }); // the result can see on Network / register / Preview of devtool
     });
 
     ...
     ```
 
-## Error fix
+### Error fix
 
 - Uncaught (in promise) TypeError: Failed to execute 'fetch' on 'Window': Request with GET/HEAD method cannot have body.
 
@@ -187,3 +187,35 @@
     - `cors` is a node.js package for providing a Connect/Express middleware that can be used to enable CORS with various options.
 
     - [CORS (Cross-Origin Resource Sharing)](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS) is an HTTP-header based mechanism that allows a server to indicate any origins (domain, scheme, or port) other than its own from which a browser should permit loading resources. CORS also relies on a mechanism by which browsers make a "preflight" request to the server hosting the cross-origin resource, in order to check that the server will permit the actual request. In that preflight, the browser sends headers that indicate the HTTP method and headers that will be used in the actual request.
+
+## Install MongoDB
+
+- [Download MongoDB Installer](https://www.mongodb.com/try/download/community?tck=docs_server) - the Community `.msi` installer from the link and execute the file.
+
+  - Uncheck "Install MongoD as a Service" to do not configure MongoDB as a Windows service because I will run it locally without network connectivity.
+
+- Set up the MongoDB environment
+
+  - MongoDB requires a data directory to store all data. MongoDB’s default data directory path is the absolute path \data\db on **the drive from which you start MongoDB**. Create this folder by running the following command **in a Command Prompt**:
+
+    - `md \data\db`
+
+  - You can specify an alternate path for data files using the `--dbpath` option to mongod.exe, for example:
+
+    - `md \mongodb\data`
+
+    - `"C:\Program Files\MongoDB\Server\5.0\bin\mongod.exe" --dbpath D:\mongodb\data`
+
+- Start MongoDB
+
+  - `"C:\Program Files\MongoDB\Server\5.0\bin\mongod.exe"`
+
+- Connect MongoDB
+
+  - `"C:\Program Files\MongoDB\Server\5.0\bin\mongo.exe"`
+
+  - To disconnect MongoDB, `> quit()`
+
+- You can use MongoDB Compass for management it
+
+  - Compass is an interactive tool for querying, optimizing, and analyzing your MongoDB data.
