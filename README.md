@@ -198,21 +198,25 @@
 
   - MongoDB requires a data directory to store all data. MongoDB’s default data directory path is the absolute path \data\db on **the drive from which you start MongoDB**. Create this folder by running the following command **in a Command Prompt**:
 
-    - `md \data\db`
-
-  - You can specify an alternate path for data files using the `--dbpath` option to mongod.exe, for example:
-
     - `md \mongodb\data`
 
-    - `"C:\Program Files\MongoDB\Server\5.0\bin\mongod.exe" --dbpath D:\mongodb\data`
+    - Copy the location of mongo.exe, `C:\Program Files\MongoDB\Server\5.0\bin`
 
-- Start MongoDB
+    - To make it easier to run server in future, press search and type `environment variables`
 
-  - `"C:\Program Files\MongoDB\Server\5.0\bin\mongod.exe"`
+      - Click `Edit the system environment variables`
 
-- Connect MongoDB
+      - Push `Environment Variables` button
 
-  - `"C:\Program Files\MongoDB\Server\5.0\bin\mongo.exe"`
+      - Under `System variables`, double click on `path`
+
+      - Click `New` and paste the location
+
+      - Hit `Ok`
+
+- Start MongoDB: `mongod.exe` on cmd
+
+- Connect MongoDB: `mongo.exe` on new cmd
 
   - To disconnect MongoDB, `> quit()`
 
@@ -247,7 +251,7 @@
     module.exports = model;
     ```
 
-- On `/server/index.js`
+- On `server/index.js`
 
   - ```js
     ...
