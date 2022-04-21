@@ -279,3 +279,26 @@
       console.log('Server started on 1337 port');
     });
     ```
+
+## Check if user exists on MongoDB
+
+- On `server/index.js`
+
+  - ```js
+    ...
+
+    app.post('/api/login', async (req, res) => {
+      const user = await User.findOne({
+        email: req.body.email,
+        password: req.body.password,
+      });
+
+      if (user) {
+        return res.json({ status: 'ok', user: true });
+      } else {
+        return res.json({ status: 'error', error: 'Duplicate email' });
+      }
+    });
+
+    ...
+    ```

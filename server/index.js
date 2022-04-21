@@ -18,7 +18,22 @@ app.post('/api/register', async (req, res) => {
     });
     res.json({ status: 'ok' });
   } catch (error) {
+    console.log(error);
     res.json({ status: 'error', error: 'Duplicate email' });
+  }
+});
+
+app.post('/api/login', async (req, res) => {
+  console.log(req.body);
+  const user = await User.findOne({
+    email: req.body.email,
+    password: req.body.password,
+  });
+
+  if (user) {
+    return res.json({ status: 'ok', user: true });
+  } else {
+    return res.json({ status: 'error', error: 'Duplicate email' });
   }
 });
 
