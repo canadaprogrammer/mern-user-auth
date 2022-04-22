@@ -402,3 +402,42 @@
       </React.StrictMode>
     );
     ```
+
+## Authentication
+
+### Sever side
+
+- ```bash
+  cd server
+  npm i jsonwebtoken
+  ```
+
+- On `server/index.js`
+
+  - ```js
+    ...
+    const jwt = require('jsonwebtoken');
+
+    ...
+
+    app.post('/api/login', async (req, res) => {
+      ...
+
+      if (user) {
+        const token = jwt.sign(
+          {
+            name: user.name,
+            email: user.email,
+          },
+          'secret123'
+        );
+        return res.json({ status: 'ok', user: token });
+
+    ...
+    ```
+
+  - The token will be `AAAAAA.BBBBBBBB.CCCCCC`. You can check the user info on the Console of devtool
+
+    - `atob("BBBBBBBB")` => `'{"name":"tester","email":"test@email.com","iat":1650596116}'`
+
+    - `new Date(1650596116000)` => `Thu Apr 21 2022 22:55:16 GMT-0400 (Eastern Daylight Time)`
