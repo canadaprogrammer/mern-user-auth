@@ -296,7 +296,7 @@
       if (user) {
         return res.json({ status: 'ok', user: true });
       } else {
-        return res.json({ status: 'error', error: 'Duplicate email' });
+        return res.json({ status: 'error', user: false });
       }
     });
 
