@@ -471,3 +471,161 @@
           alert('Please check you email and password');
         }
     ```
+
+## Use JWT for Getting User's Quote and the Saving
+
+- On `server/index.js`
+
+  - ```js
+    app.get('/api/quote', async (req, res) => {
+      const token = req.headers['x-access-token'];
+      try {
+        const decoded = jwt.verify(token, 'secret123');
+        const email = decoded.email;
+        const user = await User.findOne({ email: email });
+
+        return res.json({ status: 'ok', quote: user.quote });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: 'error', error: 'invalid token' });
+      }
+    });
+
+    app.post('/api/quote', async (req, res) => {
+      const token = req.headers['x-access-token'];
+      try {
+        const decoded = jwt.verify(token, 'secret123');
+        const email = decoded.email;
+        await User.updateOne(
+          { email: email },
+          { $set: { quote: req.body.quote } }
+        );
+        return res.json({ status: 'ok' });
+      } catch (error) {
+        console.log(error);
+        res.json({ status: 'error', error: 'invalid token' });
+      }
+    });
+    ```
+
+- On `client/src/App.js`
+
+  - ```js
+    import Dashboard from './pages/Dashboard';
+
+    const App = () => {
+      ...
+              <Route path='/dashboard' element={<Dashboard />} />
+    ```
+
+- ```bash
+  cd client
+  npm i jwt-decode
+  ```
+
+- Create `client/src/pages/Dashboard.js`
+
+  - ```js
+    import React, { useEffect, useState, useCallback } from 'react';
+    import jwt_decode from 'jwt-decode';
+    import { useNavigate } from 'react-router-dom';
+
+    const Dashboard = () => {
+      const navigate = useNavigate();
+      const [quote, setQuote] = useState('');
+      const [tempQuote, setTempQuote] = useState('');
+
+      // get user quote
+      async function populateQuote() {
+        const req = await fetch('http://localhost:1337/api/quote', {
+          headers: {
+            'x-access-token': localStorage.getItem('token'),
+          },
+        });
+
+        const data = await req.json();
+        if (data.status === 'ok') {
+          setQuote(data.quote);
+        } else {
+          alert(data.error);
+        }
+      }
+
+      useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+          const user = jwt_decode(token);
+          if (!user) {
+            localStorage.removeItem('token');
+            navigate('/login');
+          } else {
+            populateQuote();
+          }
+        }
+      }, []);
+
+      // update user quote
+      async function updateQuote(event) {
+        event.preventDefault();
+        const req = await fetch('http://localhost:1337/api/quote', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-access-token': localStorage.getItem('token'),
+          },
+          body: JSON.stringify({
+            quote: tempQuote,
+          }),
+        });
+
+        const data = await req.json();
+        if (data.status === 'ok') {
+          setQuote(tempQuote);
+          setTempQuote('');
+        } else {
+          alert(data.error);
+        }
+      }
+
+      return (
+        <div>
+          <h1>Your quote: {quote || 'No quote found'}</h1>
+          <form onSubmit={updateQuote}>
+            <input
+              type='text'
+              placeholder='Quote'
+              value={tempQuote}
+              onChange={(e) => setTempQuote(e.target.value)}
+              autoFocus
+              ref={(inputElement) => {
+                if (inputElement) {
+                  inputElement.focus();
+                }
+              }}
+            />
+            <input type='submit' value='Update quote' />
+          </form>
+        </div>
+      );
+    };
+
+    export default Dashboard;
+    ```
+
+### Fix Errors
+
+- When I tried to use jsonwebtoken with latest version of create-react-app, it issued some errors as below.
+
+  - I tried to fix the errors by adding code like `"browser": { "stream": false, "util": false, "buffer": false }` to package.json of the node_modules. The errors were disappeared, but the project was not working correctly.
+
+  - `Module not found: Error: Can't resolve 'buffer' in 'D:\study_program\mern\user_auth\client\node_modules\buffer-equal-constant-time'`
+
+  - `Module not found: Error: Can't resolve 'crypto' in 'D:\study_program\mern\user_auth\client\node_modules\jwa'` and `Can't resolve 'util'`
+
+  - `Module not found: Error: Can't resolve 'stream' in 'D:\study_program\mern\user_auth\client\node_modules\jws\lib'`, `Can't resolve 'util'`, and `Can't resolve 'buffer'`
+
+  - add `"browser": { "stream": false, "util": false, "buffer": false }`
+
+  - `Module not found: Error: Can't resolve 'buffer' in 'D:\study_program\mern\user_auth\client\node_modules\safe-buffer'`
+
+- Solution: using jwt-decode instead of jsonwebtoken
