@@ -1,6 +1,9 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -18,7 +21,13 @@ function Login() {
     });
     const data = await response.json();
 
-    console.log(data);
+    if (data.user) {
+      localStorage.setItem('token', data.user);
+      alert('Login Successful');
+      navigate('/dashboard');
+    } else {
+      alert('Please check you email and password');
+    }
   }
 
   return (

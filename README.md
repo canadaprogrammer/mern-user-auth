@@ -403,9 +403,7 @@
     );
     ```
 
-## Authentication
-
-### Sever side
+## Use JWT for User's Authentication
 
 - ```bash
   cd server
@@ -441,3 +439,35 @@
     - `atob("BBBBBBBB")` => `'{"name":"tester","email":"test@email.com","iat":1650596116}'`
 
     - `new Date(1650596116000)` => `Thu Apr 21 2022 22:55:16 GMT-0400 (Eastern Daylight Time)`
+
+## Set Route and Save token to LocalStorage
+
+- On `client/src/pages/Register.js`
+
+  - ```js
+    import { useNavigate } from 'react-router-dom';
+
+    function Register() {
+      const navigate = useNavigate();
+      ...
+        if (data.status === 'ok') {
+          navigate('/login');
+        }
+    ```
+
+- On `client/src/pages/Login.js`
+
+  - ```js
+    import { useNavigate } from 'react-router-dom';
+
+    function Login() {
+      const navigate = useNavigate();
+      ...
+        if (data.user) {
+          localStorage.setItem('token', data.user);
+          alert('Login Successful');
+          navigate('/dashboard');
+        } else {
+          alert('Please check you email and password');
+        }
+    ```
