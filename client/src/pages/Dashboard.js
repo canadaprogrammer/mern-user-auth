@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import jwt_decode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 
@@ -32,7 +32,7 @@ const Dashboard = () => {
         populateQuote();
       }
     }
-  }, []);
+  }, [navigate]);
 
   async function updateQuote(event) {
     event.preventDefault();

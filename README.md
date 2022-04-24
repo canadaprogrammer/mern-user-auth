@@ -629,3 +629,49 @@
   - `Module not found: Error: Can't resolve 'buffer' in 'D:\study_program\mern\user_auth\client\node_modules\safe-buffer'`
 
 - Solution: using jwt-decode instead of jsonwebtoken
+
+## Store Password by bcryptjs
+
+- ```bash
+  cd server
+  npm i bcryptjs
+  ```
+
+- On `server/index.js`
+
+  - ```js
+    const bcrypt = require('bcryptjs');
+
+    ...
+    app.post('/api/register', async (req, res) => {
+      try {
+        const newPassword = await bcrypt.hash(req.body.password, 10);
+        await User.create({
+          name: req.body.name,
+          email: req.body.email,
+          password: newPassword,
+        });
+        res.json({ status: 'ok' });
+      } catch (error) {
+        ...
+
+    app.post('/api/login', async (req, res) => {
+      const user = await User.findOne({
+        email: req.body.email,
+      });
+      if (!user) {
+        return res.json({ status: 'error', error: 'Invalid login' });
+      }
+
+      const isPasswordValid = await bcrypt.compare(
+        req.body.password,
+        user.password
+      );
+
+      if (user) {
+      if (isPasswordValid) {
+        const token = jwt.sign(
+          {
+            name: user.name,
+            ...
+    ```
