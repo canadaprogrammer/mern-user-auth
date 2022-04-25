@@ -675,3 +675,7 @@
             name: user.name,
             ...
     ```
+
+## The Result Record
+
+- [MERN Stack - User Auth](https://vimeo.com/702672301/dabbe6a5b7)
